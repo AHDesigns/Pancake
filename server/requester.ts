@@ -1,14 +1,14 @@
-const getReviews = require('./github/reviews');
+import getReviews from './github/reviews';
 
-module.exports = ({ cache, reviewEmitter, log, watchedRepos }) => {
-    const requests = Object.values(watchedRepos).reduce(dedupe, []);
+export default ({ cache, reviewEmitter, log, watchedRepos }) => {
+    const requests = Object.values(watchedRepos).reduce<any[]>(dedupe, []);
 
     log.info('fetching data', requests);
 
     Promise.all(
         requests.map(repo =>
             getReviews(repo, cache.get([repo, 'params']))
-                .then(data => {
+                .then((data: any) => {
                     const oldData = cache.get([repo, 'value']) || {};
                     const changes = getChanges(oldData.pullRequests, data.pullRequests);
                     cache.set([repo, 'value'], data);

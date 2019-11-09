@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-module.exports = () => {
+export default () => {
     try {
         return JSON.parse(fs.readFileSync('./fixtures/cache.json', { encoding: 'utf8' }));
     } catch (e) {

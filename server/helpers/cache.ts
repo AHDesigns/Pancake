@@ -1,6 +1,6 @@
-const clone = require('./clone');
+import clone from './clone';
 
-module.exports = cacheSystem;
+export default cacheSystem;
 
 function cacheSystem(initialValue = {}) {
     const cache = initialValue;

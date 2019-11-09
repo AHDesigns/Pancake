@@ -1,8 +1,8 @@
-const request = require('request');
-const fs = require('fs');
-const log = require('./logger');
+import request from 'request';
+import fs from 'fs';
+import log from './logger';
 
-module.exports = ({ options, loggable }) =>
+export default ({ options, loggable }): Promise<any> =>
     new Promise((resolve, reject) => {
         log.debug(options);
         log.info('request.sending', loggable);

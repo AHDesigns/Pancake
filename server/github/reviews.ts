@@ -1,8 +1,8 @@
-const send = require('../helpers/send');
-const { gitGQL } = require('../helpers/endpoints');
-const { reviewsQuery } = require('./queries');
+import send from '../helpers/send';
+import { gitGQL } from '../helpers/endpoints';
+import { reviewsQuery } from './queries';
 
-module.exports = (repo, params) =>
+export default (repo, params) =>
     new Promise((resolve, reject) => {
         getAllReviews()
             .then(({ name, rateLimit, prs }) => {
@@ -21,7 +21,7 @@ module.exports = (repo, params) =>
                 reject();
             });
 
-        async function getAllReviews(allPrs = [], after) {
+        async function getAllReviews(allPrs = [], after?: any) {
             const { repository, rateLimit } = await send(
                 gitGQL({
                     query: reviewsQuery,
@@ -51,7 +51,7 @@ const reviewStates = {
 function calcReviewState(rawReviews) {
     const uniqueReviews = getLatestReviewStates(rawReviews);
 
-    const state = uniqueReviews.reduce(reviewStateFromReviews, reviewStates.PENDIING);
+    const state = uniqueReviews.reduce(reviewStateFromReviews, reviewStates.PENDING);
 
     return { uniqueReviews, state };
 

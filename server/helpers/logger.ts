@@ -1,4 +1,4 @@
-const { logLevels, loggerLevel } = require('./config');
+import { logLevels, loggerLevel } from './config';
 
 const valid = level => validAt => (level >= validAt ? null : () => {});
 
@@ -12,9 +12,9 @@ function logger(level) {
         level: loggerLevel,
     };
 
-    function log(method = '') {
+    function log(method: 'error' | 'info' | 'debug') {
         const logDetails = console[method]; // eslint-disable-line no-console
-        return (message = '', details) => {
+        return (message: any, details?: any) => {
             logDetails(
                 JSON.stringify({
                     [method]: message,
@@ -31,4 +31,4 @@ const levelMapping = {
     [logLevels.DEBUG]: 3,
 };
 
-module.exports = logger(loggerLevel);
+export default logger(loggerLevel);

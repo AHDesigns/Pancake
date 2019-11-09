@@ -1,11 +1,11 @@
-const send = require('../helpers/send');
-const { gitGQL } = require('../helpers/endpoints');
-const { getUsers } = require('./queries');
+import send from '../helpers/send';
+import { gitGQL } from '../helpers/endpoints';
+import { getUsers } from './queries';
 
 // hacky cache
 let userStore = [];
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
     const params = req.body; // TODO: validate
 
     if (userStore.length > 0) {
@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
             .catch(next);
     }
 
-    async function getAllUsers(allUsers = [], after) {
+    async function getAllUsers(allUsers = [], after?: any) {
         const { organization, rateLimit } = await send(
             gitGQL({
                 query: getUsers,

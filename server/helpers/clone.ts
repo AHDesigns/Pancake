@@ -1,6 +1,6 @@
 const isObject = value => value && typeof value === 'object' && value.constructor === Object;
 
-module.exports = function clone(input) {
+export default function clone(input) {
     if (isObject(input)) {
         return Object.entries(input).reduce(
             (obj, [key, value]) => ({

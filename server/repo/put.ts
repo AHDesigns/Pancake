@@ -1,4 +1,4 @@
-module.exports = cache => (req, res, next) => {
+export default cache => (req, res, next) => {
     try {
         const { key, value } = validateArgs(req.body);
         cache.set([key, 'params'], value);

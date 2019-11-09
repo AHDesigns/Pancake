@@ -163,8 +163,11 @@ const getUsers = gql`
     }
 `;
 
-module.exports = {
+const exported = {
     reviewsQuery,
     prHistory,
-    getUsers,
+    getUsers
 };
+
+export default exported;
+export { reviewsQuery, prHistory, getUsers };

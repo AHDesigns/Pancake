@@ -1,4 +1,4 @@
-const clone = require('./clone');
+import clone from './clone';
 
 function gitGQL({ query, variables = '{}' }) {
     const options = {
@@ -38,4 +38,9 @@ function gitGQL({ query, variables = '{}' }) {
     }
 }
 
-module.exports = { gitGQL };
+const exported = {
+    gitGQL
+};
+
+export default exported;
+export { gitGQL };

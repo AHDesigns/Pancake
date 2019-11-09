@@ -1,22 +1,26 @@
 require('dotenv').config({ path: './.env.local' });
-const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-const EventEmitter = require('events');
+import bodyParser from 'body-parser';
+import { join } from 'path';
+import { Server } from 'http';
+import EventEmitter from 'events';
+import cors from 'cors';
+import express from 'express';
+import socket from 'socket.io';
 
-const { port, env } = require('./helpers/config');
-const getPrHistory = require('./github/prHistory');
-const getUsers = require('./github/getUsers');
-const getRepos = require('./repo/get');
-const putRepo = require('./repo/put');
-const log = require('./helpers/logger');
-const cacheSystem = require('./helpers/cache');
-const initialCache = require('./helpers/startupCache');
-const requester = require('./requester');
+const app = express();
+const http = new Server(app);
+// http.createServer(app);
+const io = socket(http);
+
+import { port, env } from './helpers/config';
+// import getPrHistory from './github/prHistory';
+import getUsers from './github/getUsers';
+import getRepos from './repo/get';
+import putRepo from './repo/put';
+import log from './helpers/logger';
+import cacheSystem from './helpers/cache';
+import initialCache from './helpers/startupCache';
+import requester from './requester';
 
 const cache = cacheSystem(initialCache());
 const reviewEmitter = new EventEmitter();
@@ -85,10 +89,10 @@ io.on('connection', socket => {
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/static', express.static(path.join(`${__dirname}/../build/static`)));
+app.use('/static', express.static(join(`${__dirname}/../build/static`)));
 
 app.get('/', (_, res) => {
-    res.sendFile(path.join(`${__dirname}/../build/index.html`));
+    res.sendFile(join(`${__dirname}/../build/index.html`));
 });
 // app.put('/users', getUsers);
 app.put('/users', getUsers);
@@ -96,8 +100,8 @@ app.put('/users', getUsers);
 app.get('/repos', getRepos(cache));
 app.put('/repos', putRepo(cache));
 
-app.put('/pr-history', getPrHistory);
-
+// app.put('/pr-history', getPrHistory);
+//
 app.all('*', (req, res) => {
     log.info('middleware.invalid.route', req.path);
     res.status(404);

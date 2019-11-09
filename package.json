@@ -5,7 +5,7 @@
   "description": "Like waffle but tastier",
   "proxy": "http://localhost:6371/",
   "scripts": {
-    "launch": "NODE_ENV=production node server/index.js",
+    "launch": "NODE_ENV=production node build/index.js",
     "start:client": "react-scripts start",
     "start:server": "nodemon --inspect=0.0.0.0:9229 server/index.js",
     "watch:server": "tsc -p ./tsconfig.server.json -w --preserveWatchOutput",
@@ -16,8 +16,9 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@types/express": "^4.17.2",
     "@types/jest": "^24.0.15",
-    "@types/node": "^12.6.2",
+    "@types/node": "^12.12.7",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
     "body-parser": "^1.19.0",

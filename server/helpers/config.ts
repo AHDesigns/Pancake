@@ -4,9 +4,18 @@ const logLevels = {
     DEBUG: 'DEBUG',
 };
 
-module.exports = {
+const exported = {
     logLevels,
     loggerLevel: process.env.LOG_LEVEL || logLevels.INFO,
     port: process.env.PORT || 6371,
-    env: process.env.NODE_ENV || 'production',
+    env: process.env.NODE_ENV || 'production'
 };
+
+export default exported;
+export { logLevels };
+
+export const {
+    loggerLevel,
+    port,
+    env
+} = exported;

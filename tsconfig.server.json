@@ -1,9 +1,11 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "noEmit": false,
     "noImplicitAny": false,
     "noImplicitReturns": false,
     "noUnusedLocals": false,
+    "outDir": "./build/",
     "resolveJsonModule": false,
     "skipLibCheck": false,
     "strict": false,
