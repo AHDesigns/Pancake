@@ -1,11 +1,13 @@
+import { TUser } from '@shared/types';
+import { Request, NextFunction, Response } from 'express';
 import send from '../helpers/send';
 import { gitGQL } from '../helpers/endpoints';
 import { getUsers } from './queries';
 
 // hacky cache
-let userStore = [];
+let userStore: TUser[] = [];
 
-export default (req, res, next) => {
+export default (req: Request, res: Response, next: NextFunction): void => {
     const params = req.body; // TODO: validate
 
     if (userStore.length > 0) {
@@ -14,12 +16,12 @@ export default (req, res, next) => {
         getAllUsers()
             .then(({ users }) => {
                 userStore = users;
-                res.json(userStore);
+                res.json({ users: userStore });
             })
             .catch(next);
     }
 
-    async function getAllUsers(allUsers = [], after?: any) {
+    async function getAllUsers(allUsers: TUser[] = [], after?: any): Promise<{ users: TUser[]; rateLimit: any }> {
         const { organization, rateLimit } = await send(
             gitGQL({
                 query: getUsers,

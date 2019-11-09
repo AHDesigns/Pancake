@@ -1,13 +1,16 @@
+import { Options } from 'request';
 import clone from './clone';
 
-function gitGQL({ query, variables = '{}' }) {
-    const options = {
+export interface IGitGQL {
+    query: string;
+    variables: object;
+}
+
+export function gitGQL(params: IGitGQL): { options: Options; loggable: Options } {
+    const options: Options = {
         method: 'POST',
         uri: 'https://api.github.com/graphql',
-        body: {
-            query,
-            variables,
-        },
+        body: params,
         headers: {
             'User-Agent': 'Pancake',
             // isDraft, mergeStateStatus
@@ -19,28 +22,20 @@ function gitGQL({ query, variables = '{}' }) {
 
     return {
         options,
-        loggable: clean(clone(options)),
+        loggable: clean(options),
     };
-
-    /* eslint-disable prefer-template */
-    function clean(params) {
-        const safe = params;
-        safe.headers.Authorization = params.headers.Authorization.replace(/./g, 'x');
-        safe.body.variables = Object.entries(safe.body.variables).reduce(
-            (acc, [key, value]) => ({
-                ...acc,
-                [key]: (value + '').replace(/./g, 'x'),
-            }),
-            {},
-        );
-
-        return safe;
-    }
 }
 
-const exported = {
-    gitGQL
-};
+function clean(params: Options): Options {
+    const safe = clone(params);
+    safe.headers.Authorization = params.headers.Authorization.replace(/./g, 'x');
+    safe.body.variables = Object.entries(safe.body.variables).reduce(
+        (acc, [key, value]) => ({
+            ...acc,
+            [key]: (value + '').replace(/./g, 'x'),
+        }),
+        {},
+    );
 
-export default exported;
-export { gitGQL };
+    return safe;
+}

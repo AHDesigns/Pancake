@@ -1,8 +1,15 @@
 import { logLevels, loggerLevel } from './config';
 
-const valid = level => validAt => (level >= validAt ? null : () => {});
+const valid = (level: number) => (validAt: number): null | (() => void) => (level >= validAt ? null : (): void => {});
 
-function logger(level) {
+interface Logger {
+    error(message: any, details?: any): void;
+    info(message: any, details?: any): void;
+    debug(message: any, details?: any): void;
+    level: string;
+}
+
+function logger(level: string): Logger {
     const useLevel = valid(levelMapping[level]);
 
     return {
@@ -12,9 +19,9 @@ function logger(level) {
         level: loggerLevel,
     };
 
-    function log(method: 'error' | 'info' | 'debug') {
+    function log(method: 'error' | 'info' | 'debug'): (message: any, details?: any) => void {
         const logDetails = console[method]; // eslint-disable-line no-console
-        return (message: any, details?: any) => {
+        return (message: any, details?: any): void => {
             logDetails(
                 JSON.stringify({
                     [method]: message,

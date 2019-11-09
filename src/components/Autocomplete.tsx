@@ -1,5 +1,5 @@
 import React, { Component, Fragment, Dispatch } from 'react';
-import { TUser } from '../types';
+import { TUser } from '../shared/types';
 import { filterAction } from './App';
 
 interface IProps {

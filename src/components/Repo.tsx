@@ -1,5 +1,6 @@
 import React from 'react';
-import { IPrData, IPullRequest, TRepoUserFilters } from '../types';
+import { IPrData, IPullRequest } from '../shared/types';
+import { TRepoUserFilters } from '../types';
 import Pr from './Pr';
 
 const filteredUsers = (repoUserFilters: TRepoUserFilters, repoName: string) => {

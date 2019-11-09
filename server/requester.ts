@@ -1,23 +1,46 @@
 import getReviews from './github/reviews';
+import log from '@helpers/logger';
+import { env } from '@helpers/config';
+import { TServerInfo } from './types';
+import { IPullRequest, EnumBoardStatus } from '@shared/types';
 
-export default ({ cache, reviewEmitter, log, watchedRepos }) => {
-    const requests = Object.values(watchedRepos).reduce<any[]>(dedupe, []);
+const { NEW, UPDATED, UNCHANGED } = EnumBoardStatus;
+
+export default (sharedInfo: TServerInfo): void => {
+    // eslint-disable-next-line no-unused-expressions
+    env === 'production'
+        ? setInterval(() => {
+              requester(sharedInfo);
+          }, 30 * 1000)
+        : setTimeout(() => {
+              requester(sharedInfo);
+          }, 2 * 1000);
+};
+
+function requester({ cache, reviewEmitter, watchedRepos }: TServerInfo): void {
+    const requests = Object.values(watchedRepos).reduce(dedupe, []);
 
     log.info('fetching data', requests);
 
     Promise.all(
         requests.map(repo =>
-            getReviews(repo, cache.get([repo, 'params']))
-                .then((data: any) => {
-                    const oldData = cache.get([repo, 'value']) || {};
+            getReviews(cache.get(repo, 'params'))
+                .then(data => {
+                    const oldData = cache.get(repo, 'value'); // TODO maybe need a ||
                     const changes = getChanges(oldData.pullRequests, data.pullRequests);
-                    cache.set([repo, 'value'], data);
+                    cache.set(repo, 'value', data);
 
-                    if (changes.every(pr => pr.boardStatus === 'UNCHANGED')) {
+                    if (changes.every(pr => pr.boardStatus === UNCHANGED)) {
                         log.info(`no new data for ${repo}`);
                     } else {
                         log.info(`emitting data for ${repo}`);
-                        reviewEmitter.emit('new-reviews', { repo, data: { name: repo, pullRequests: changes } });
+                        reviewEmitter.emit('new-reviews', {
+                            repo,
+                            data: {
+                                name: repo,
+                                pullRequests: changes,
+                            },
+                        });
                     }
                     reviewEmitter.emit('rate-limit', data.rateLimit);
                 })
@@ -26,9 +49,9 @@ export default ({ cache, reviewEmitter, log, watchedRepos }) => {
                 }),
         ),
     );
-};
+}
 
-const dedupe = (all, curr) => {
+function dedupe<T>(all: T[], curr: T[]): T[] {
     curr.forEach(repo => {
         if (all.includes(repo)) {
             return;
@@ -36,24 +59,24 @@ const dedupe = (all, curr) => {
         all.push(repo);
     });
     return all;
-};
+}
 
-function getChanges(old = [], current = []) {
-    // TODO: can add removed for animation
-    return current.reduce((prs, pr) => {
+function getChanges(old: IPullRequest[], current: IPullRequest[]): IPullRequest[] {
+    return current.map(pr => {
         const maybeEdited = old.find(oldPr => oldPr.id === pr.id);
-        const unchanged = pr.updatedAt === (maybeEdited || {}).updatedAt;
-        /* eslint-disable no-param-reassign */
-        if (!maybeEdited) {
-            pr.boardStatus = 'NEW';
-        } else if (unchanged) {
-            pr.boardStatus = 'UNCHANGED';
-        } else {
-            pr.boardStatus = 'UPDATED';
-        }
-        /* eslint-enable no-param-reassign */
 
-        prs.push(pr);
-        return prs;
+        return { ...pr, boardStatus: status(pr, maybeEdited) };
     }, []);
+
+    function status(pr: IPullRequest, maybeEdited?: IPullRequest): EnumBoardStatus {
+        const unchanged = pr.updatedAt === maybeEdited.updatedAt;
+        // TODO: can add removed for animation
+        if (!maybeEdited) {
+            return NEW;
+        } else if (unchanged) {
+            return UNCHANGED;
+        } else {
+            return UPDATED;
+        }
+    }
 }

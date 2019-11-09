@@ -1,5 +1,6 @@
 import { constants } from '../constants';
-import { IPrInfo, isPrInfo, TPrHistory, isTPrHistory, TUser } from '../types';
+import { IPrInfo, isPrInfo, TUser } from '../shared/types';
+import { TPrHistory, isTPrHistory } from '../types';
 
 export function getRepos(): Promise<IPrInfo[]> {
     return new Promise((resolve, reject): void => {

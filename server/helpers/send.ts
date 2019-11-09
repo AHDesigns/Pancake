@@ -1,9 +1,10 @@
-import request from 'request';
+import request, { Options } from 'request';
 import fs from 'fs';
 import log from './logger';
 
-export default ({ options, loggable }): Promise<any> =>
-    new Promise((resolve, reject) => {
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export default <T>({ options, loggable }: { options: Options; loggable: Options }): Promise<T> =>
+    new Promise((resolve, reject): void => {
         log.debug(options);
         log.info('request.sending', loggable);
         request(options, (error, response) => {

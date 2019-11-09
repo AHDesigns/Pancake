@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Dispatch } from 'react';
-import { IPrInfo, TRepoUserFilters, TUser } from '../types';
+import { IPrInfo, TUser } from '../shared/types';
+import { TRepoUserFilters } from '../types';
 import { getRepos, putRepos } from '../utils/fetchWrappers';
 import Autocomplete from './Autocomplete';
 import { filterAction } from './App';

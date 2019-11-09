@@ -4,9 +4,15 @@
     "allowJs": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "esnext",
     "target": "es5"
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

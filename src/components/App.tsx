@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import './App.scss';
-import { IPrData, TUser, TRepoUserFilters } from '../types';
+import { IPrData, TUser } from '../shared/types';
+import { TRepoUserFilters } from '../types';
 import { Provider } from './Socket';
 import { RepoInfo } from './RepoSelector';
 /* import { PrHistory } from './PrHistory'; */

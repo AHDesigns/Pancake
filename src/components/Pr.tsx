@@ -1,5 +1,5 @@
 import React from 'react';
-import { IPullRequest, IUniqueReview, IReviewRequest, isUserReview } from '../types';
+import { IPullRequest, IUniqueReview, IReviewRequest, isUserReview } from '../shared/types';
 import GitMerge from '../git-merge';
 import octocat from '../Octocat.png';
 

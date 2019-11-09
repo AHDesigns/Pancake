@@ -1,3 +1,5 @@
+[![Coding time tracker](https://wakatime.com/badge/github/AHDesigns/pancake.svg)](https://wakatime.com/badge/github/AHDesigns/pancake)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

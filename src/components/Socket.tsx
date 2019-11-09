@@ -1,7 +1,7 @@
 import React from 'react';
 import openSocket from 'socket.io-client';
 import { constants } from '../constants';
-import { IPrData, isPrData } from '../types';
+import { IPrData, isPrData } from '../shared/types';
 
 interface IProps {
     children: (reposData: IPrData[]) => any;
