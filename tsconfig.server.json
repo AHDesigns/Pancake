@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "resolveJsonModule": false,
+    "skipLibCheck": false,
+    "strict": false,
+    "target": "esnext",
+    "module": "commonjs"
+  },
+  "include": ["server"]
+}
