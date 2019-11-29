@@ -5,7 +5,7 @@
   "description": "Like waffle but tastier",
   "proxy": "http://localhost:6371/",
   "scripts": {
-    "launch": "NODE_ENV=production node build/index.js",
+    "launch": "NODE_ENV=production node build/server/index.js",
     "start:client": "react-scripts start",
     "start:server": "nodemon --inspect=0.0.0.0:9229 build/server/index.js",
     "watch:server": "tsc -p ./server/tsconfig.json -w",

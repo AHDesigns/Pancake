@@ -8,10 +8,14 @@ import putRepo from './repo/put';
 import { ICache } from './types';
 
 export default (app: express.Express, cache: ICache): void => {
-    app.use('/static', express.static(join(`${__dirname}/../build/static`)));
+    app.use('/static', express.static(join(__dirname, '../static')));
 
     app.get('/', (_, res) => {
-        res.sendFile(join(`${__dirname}/../build/index.html`));
+        res.sendFile(join(__dirname, '../index.html'));
+    });
+
+    app.get('/manifest.json', (_, res) => {
+        res.sendFile(join(__dirname, '../manifest.json'));
     });
 
     app.put('/users', getUsers);
