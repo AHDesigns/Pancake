@@ -1,3 +1,4 @@
+require('module-alias/register');
 require('dotenv').config({ path: './.env.local' });
 import EventEmitter from 'events';
 import { Server } from 'http';
