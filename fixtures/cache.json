@@ -5,8 +5,7 @@
       "owner": "sky-uk",
       "prCount": 26,
       "reviewsCount": 10
-    },
-    "value": {}
+    }
   },
   "sky-pages": {
     "params": {
@@ -14,8 +13,7 @@
       "owner": "sky-uk",
       "prCount": 100,
       "reviewsCount": 6
-    },
-    "value": {}
+    }
   },
   "skymobile-PR-dashboard": {
     "params": {
@@ -23,7 +21,6 @@
       "owner": "sky-uk",
       "prCount": 5,
       "reviewsCount": 1
-    },
-    "value": {}
+    }
   }
 }

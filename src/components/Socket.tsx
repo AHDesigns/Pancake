@@ -2,6 +2,7 @@ import React from 'react';
 import openSocket from 'socket.io-client';
 import { constants } from '../constants';
 import { IPrData, isPrData } from '../shared/types';
+import { SocketIOEvents, PancakeEvents } from '../shared/constants';
 
 interface IProps {
     children: (reposData: IPrData[]) => any;
@@ -25,20 +26,19 @@ export class Provider extends React.Component<IProps, IState> {
 
     componentDidMount(): void {
         const { socket } = this.state;
-        socket.emit('connected');
-        socket.on('connected', console.log);
-
-        socket.emit('availableRepos', this.props.subscribedRepos);
-
-        socket.on('connect', () => {
-            socket.emit('availableRepos', this.props.subscribedRepos);
+        socket.on(SocketIOEvents.connect, () => {
+            socket.emit(PancakeEvents.availableRepos, this.props.subscribedRepos);
         });
+
+        /* socket.emit('availableRepos', this.props.subscribedRepos);
+         */
+        socket.on(PancakeEvents.clientId, console.log);
 
         this.updateRepos = this.updateRepos.bind(this);
 
-        socket.on('reviews', this.updateRepos);
+        socket.on(PancakeEvents.reviews, this.updateRepos);
 
-        socket.on('rate-limit', (rateLimit: any) => {
+        socket.on(PancakeEvents.rateLimit, (rateLimit: any) => {
             console.log('rateLimit', rateLimit);
         });
     }
@@ -46,7 +46,7 @@ export class Provider extends React.Component<IProps, IState> {
     componentDidUpdate(oldProps: IProps): void {
         const { subscribedRepos } = this.props;
         if (subscribedRepos !== oldProps.subscribedRepos) {
-            this.state.socket.emit('availableRepos', subscribedRepos);
+            this.state.socket.emit(PancakeEvents.availableRepos, subscribedRepos);
         }
 
         // ignoring repo, so remove

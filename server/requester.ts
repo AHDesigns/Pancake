@@ -26,8 +26,8 @@ function requester({ cache, reviewEmitter, watchedRepos }: TServerInfo): void {
         requests.map(repo =>
             getReviews(cache.get(repo, 'params'))
                 .then(data => {
-                    const oldData = cache.get(repo, 'value'); // TODO maybe need a ||
-                    const changes = getChanges(oldData.pullRequests, data.pullRequests);
+                    const { pullRequests } = cache.get(repo, 'value') || { pullRequests: [] as IPullRequest[] };
+                    const changes = getChanges(pullRequests, data.pullRequests);
                     cache.set(repo, 'value', data);
 
                     if (changes.every(pr => pr.boardStatus === UNCHANGED)) {
@@ -69,11 +69,10 @@ function getChanges(old: IPullRequest[], current: IPullRequest[]): IPullRequest[
     }, []);
 
     function status(pr: IPullRequest, maybeEdited?: IPullRequest): EnumBoardStatus {
-        const unchanged = pr.updatedAt === maybeEdited.updatedAt;
         // TODO: can add removed for animation
         if (!maybeEdited) {
             return NEW;
-        } else if (unchanged) {
+        } else if (pr.updatedAt === maybeEdited.updatedAt) {
             return UNCHANGED;
         } else {
             return UPDATED;
