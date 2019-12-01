@@ -1,20 +1,18 @@
-import send from '../helpers/send';
-import { gitGQL } from '../helpers/endpoints';
-import { reviewsQuery, TReviews, TGithubPullRequest, RateLimit, PrReview } from './queries/reviews';
-import { TRepoParams } from '@types';
-import { IPrData, reviewStates, IUniqueReview, IPullRequest } from '@shared/types';
+import { IPrData, reviewStates, IUniqueReview, IPullRequest, RateLimit } from '@shared/types';
+
+import send from '@helpers/send';
+import gitGQL from './gitGQL';
+import reviewsQuery, { TReviews, TGithubPr, TPrReview, ReviewsGitGQL } from './getReviewsQuery';
 
 const { PENDING, APPROVED, CHANGES_REQUESTED } = reviewStates;
 
-type TGithubPr = TGithubPullRequest['nodes'];
-
 type TAllReviews = {
     name: string;
-    prs: TGithubPr;
+    prs: TGithubPr[];
     rateLimit: RateLimit;
 };
 
-export default (params: TRepoParams): Promise<IPrData> =>
+export default (params: ReviewsGitGQL['variables']): Promise<IPrData> =>
     new Promise((resolve, reject): void => {
         getAllReviews()
             .then(({ name, rateLimit, prs }) => {
@@ -33,9 +31,10 @@ export default (params: TRepoParams): Promise<IPrData> =>
                 reject();
             });
 
-        async function getAllReviews(allPrs = [] as TGithubPr, after?: string): Promise<TAllReviews> {
+        async function getAllReviews(allPrs = [] as TGithubPr[], after?: string): Promise<TAllReviews> {
             const { repository, rateLimit } = await send<TReviews>(
                 gitGQL({
+                    operationName: 'ReviewsQuery',
                     query: reviewsQuery,
                     variables: { ...params, ...(after && { after }) },
                 }),
@@ -52,14 +51,14 @@ export default (params: TRepoParams): Promise<IPrData> =>
         }
     });
 
-function calcReviewState(rawReviews: PrReview[]): IPullRequest['reviews'] {
+function calcReviewState(rawReviews: TPrReview[]): IPullRequest['reviews'] {
     const uniqueReviews = getLatestReviewStates(rawReviews);
 
     const state = uniqueReviews.reduce(reviewStateFromReviews, PENDING);
 
     return { uniqueReviews, state };
 
-    function getLatestReviewStates(reviews: PrReview[]): IUniqueReview[] {
+    function getLatestReviewStates(reviews: TPrReview[]): IUniqueReview[] {
         return reviews.reduceRight<IUniqueReview[]>((allReviews, review) => {
             const hasAlreadyReviewed = allReviews.find(({ author }) => author.login === review.author.login);
 

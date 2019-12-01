@@ -1,3 +1,13 @@
+export type DateTime = string;
+
+export type RateLimit = {
+    limit: number;
+    cost: number;
+    nodeCount: number;
+    remaining: number;
+    resetAt: DateTime;
+};
+
 export type TUser = {
     name?: string;
     avatarUrl: string;

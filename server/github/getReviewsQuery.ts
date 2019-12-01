@@ -1,97 +1,16 @@
-import { MergeStateStatus, Mergeable, StatusState, IReviewRequest, reviewStates } from '@shared/types';
-import gql from '@helpers/gql';
-// can do something with this later
-type DateTime = string;
+import {
+    MergeStateStatus,
+    Mergeable,
+    StatusState,
+    IReviewRequest,
+    reviewStates,
+    DateTime,
+    RateLimit,
+} from '@shared/types';
+import { PageInfo, IGitGQL } from '@types';
 
-type PageInfo = {
-    hasNextPage: boolean;
-    endCursor: string;
-};
-
-export type PrReview = {
-    url: string;
-    createdAt: string;
-    state: reviewStates;
-    authorAssociation: string;
-    author: {
-        login: string;
-        avatarUrl: string;
-    };
-    onBehalfOf: {
-        nodes: Array<{
-            login: string;
-            avatarUrl: string;
-        }>;
-    };
-};
-
-export type TGithubPullRequest = {
-    pageInfo: PageInfo;
-    nodes: Array<{
-        updatedAt: DateTime;
-        id: string;
-        createdAt: DateTime;
-        url: string;
-        title: string;
-        isDraft: boolean;
-        mergeStateStatus: MergeStateStatus;
-        mergeable: Mergeable;
-        commits: {
-            nodes: Array<{
-                commit: {
-                    commitUrl: string;
-                    message: string;
-                    status: {
-                        contexts: {
-                            description: string;
-                            avatarUrl: string;
-                            state: StatusState;
-                        };
-                        state: StatusState;
-                    };
-                };
-            }>;
-        };
-        author: {
-            login: string;
-            avatarUrl: string;
-        };
-        reviewRequests: {
-            nodes: IReviewRequest[];
-        };
-
-        reviews: {
-            nodes: PrReview[];
-        };
-    }>;
-};
-
-export type RateLimit = {
-    limit: number;
-    cost: number;
-    nodeCount: number;
-    remaining: number;
-    resetAt: DateTime;
-};
-
-type TReviews = {
-    rateLimit: RateLimit;
-    repository: {
-        name: string;
-        pullRequests: TGithubPullRequest;
-    };
-};
-
-type TReviewsInput = {
-    name: string;
-    owner: string;
-    prCount: number;
-    reviewsCount: number;
-    after: string;
-};
-
-const reviewsQuery = gql`
-    query reviewsQuery($name: String!, $owner: String!, $prCount: Int = 5, $reviewsCount: Int = 5, $after: String) {
+const reviewsQuery = `
+    query ReviewsQuery($name: String!, $owner: String!, $prCount: Int = 5, $reviewsCount: Int = 5, $after: String) {
         rateLimit {
             limit
             cost
@@ -187,5 +106,84 @@ const reviewsQuery = gql`
         }
     }
 `;
+export default reviewsQuery;
 
-export { reviewsQuery, TReviews, TReviewsInput };
+export type TPrReview = {
+    url: string;
+    createdAt: string;
+    state: reviewStates;
+    authorAssociation: string;
+    author: {
+        login: string;
+        avatarUrl: string;
+    };
+    onBehalfOf: {
+        nodes: Array<{
+            login: string;
+            avatarUrl: string;
+        }>;
+    };
+};
+
+type TCommit = {
+    commit: {
+        commitUrl: string;
+        message: string;
+        status: {
+            contexts: {
+                description: string;
+                avatarUrl: string;
+                state: StatusState;
+            };
+            state: StatusState;
+        };
+    };
+};
+
+export type TGithubPr = {
+    updatedAt: DateTime;
+    id: string;
+    createdAt: DateTime;
+    url: string;
+    title: string;
+    isDraft: boolean;
+    mergeStateStatus: MergeStateStatus;
+    mergeable: Mergeable;
+    commits: {
+        nodes: TCommit[];
+    };
+    author: {
+        login: string;
+        avatarUrl: string;
+    };
+    reviewRequests: {
+        nodes: IReviewRequest[];
+    };
+
+    reviews: {
+        nodes: TPrReview[];
+    };
+};
+
+export type TReviews = {
+    rateLimit: RateLimit;
+    repository: {
+        name: string;
+        pullRequests: {
+            pageInfo: PageInfo;
+            nodes: TGithubPr[];
+        };
+    };
+};
+
+export interface ReviewsGitGQL extends IGitGQL {
+    operationName: 'ReviewsQuery';
+    query: typeof reviewsQuery;
+    variables: {
+        name: string;
+        owner: string;
+        prCount: number;
+        reviewsCount: number;
+        after?: string;
+    };
+}

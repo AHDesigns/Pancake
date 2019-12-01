@@ -2,7 +2,7 @@ import * as express from 'express';
 import { join } from 'path';
 
 import log from './helpers/logger';
-import getUsers from './github/getUsers';
+import { getUsers } from './github';
 import getRepos from './repo/get';
 import putRepo from './repo/put';
 import { ICache } from './types';
@@ -18,7 +18,16 @@ export default (app: express.Express, cache: ICache): void => {
         res.sendFile(join(__dirname, '../manifest.json'));
     });
 
-    app.put('/users', getUsers);
+    app.put('/users', (req, res, next) => {
+        const params = req.body; // TODO: validate
+        getUsers(params)
+            .then(users => {
+                res.json(users);
+            })
+            .catch(err => {
+                next(err);
+            });
+    });
 
     app.get('/repos', getRepos(cache));
     app.put('/repos', putRepo(cache));
@@ -29,7 +38,7 @@ export default (app: express.Express, cache: ICache): void => {
         res.json({ message: `invalid.route ${req.path}` });
     });
 
-    // need four args to identify error middleware 🤷🏽‍♂️
+    // need four args to identify error middleware
     // eslint-disable-next-line
     app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
         log.error('middleware.error.log', err.stack);

@@ -1,5 +1,17 @@
 import * as EventEmitter from 'events';
 import { IPrData } from '@shared/types';
+import { ParamsGitGQL } from './github';
+
+export interface IGitGQL {
+    operationName: ParamsGitGQL['operationName'];
+    query: string;
+    variables: object;
+}
+
+export type PageInfo = {
+    hasNextPage: boolean;
+    endCursor: string;
+};
 
 export type TCacheData = {
     [repo: string]: TRepoData | undefined;

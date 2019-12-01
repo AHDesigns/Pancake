@@ -1,4 +1,4 @@
-import getReviews from './github/reviews';
+import { getReviews } from './github';
 import log from '@helpers/logger';
 import { env } from '@helpers/config';
 import { TServerInfo } from './types';
