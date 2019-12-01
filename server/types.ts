@@ -14,7 +14,7 @@ export type PageInfo = {
 };
 
 export type TCacheData = {
-    [repo: string]: TRepoData | undefined;
+    [repo: string]: TRepoData;
 };
 
 type TRepoData = {

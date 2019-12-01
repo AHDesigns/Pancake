@@ -6,7 +6,11 @@ export default (cache: ICache) => (req: Request, res: Response, next: NextFuncti
     try {
         const { key, value } = validateArgs(req.body);
         cache.set(key, 'params', value);
-        res.json(Object.values(cache.all()).map(({ params }) => params));
+        res.json(
+            Object.values(cache.all())
+                .filter(Boolean)
+                .map(({ params }) => params),
+        );
     } catch (e) {
         next(e);
     }

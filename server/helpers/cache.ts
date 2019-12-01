@@ -11,11 +11,13 @@ function cacheSystem(initialValue = startupCache()): ICache {
             return clone(cache);
         },
         set(repo, key, value) {
-            cache[repo][key] = value;
+            if (cache[repo]) {
+                cache[repo][key] = value;
+            }
             return this;
         },
         get(repo, key) {
-            return cache[repo][key];
+            return cache[repo] && cache[repo][key];
         },
     } as ICache;
 }

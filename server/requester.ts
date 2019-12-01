@@ -2,7 +2,7 @@ import { getReviews } from './github';
 import log from '@helpers/logger';
 import { env } from '@helpers/config';
 import { TServerInfo } from './types';
-import { IPullRequest, EnumBoardStatus } from '@shared/types';
+import { IPullRequest, EnumBoardStatus, IPrData } from '@shared/types';
 
 const { NEW, UPDATED, UNCHANGED } = EnumBoardStatus;
 
@@ -23,31 +23,34 @@ function requester({ cache, reviewEmitter, watchedRepos }: TServerInfo): void {
     log.info('fetching data', requests);
 
     Promise.all(
-        requests.map(repo =>
-            getReviews(cache.get(repo, 'params'))
-                .then(data => {
-                    const { pullRequests } = cache.get(repo, 'value') || { pullRequests: [] as IPullRequest[] };
-                    const changes = getChanges(pullRequests, data.pullRequests);
-                    cache.set(repo, 'value', data);
+        requests.map(repo => {
+            const repoParams = cache.get(repo, 'params');
+            return repoParams
+                ? getReviews(repoParams)
+                      .then((data: IPrData) => {
+                          const { pullRequests } = cache.get(repo, 'value') || { pullRequests: [] as IPullRequest[] };
+                          const changes = getChanges(pullRequests, data.pullRequests);
+                          cache.set(repo, 'value', data);
 
-                    if (changes.every(pr => pr.boardStatus === UNCHANGED)) {
-                        log.info(`no new data for ${repo}`);
-                    } else {
-                        log.info(`emitting data for ${repo}`);
-                        reviewEmitter.emit('new-reviews', {
-                            repo,
-                            data: {
-                                name: repo,
-                                pullRequests: changes,
-                            },
-                        });
-                    }
-                    reviewEmitter.emit('rate-limit', data.rateLimit);
-                })
-                .catch(e => {
-                    console.log(e);
-                }),
-        ),
+                          if (changes.every(pr => pr.boardStatus === UNCHANGED)) {
+                              log.info(`no new data for ${repo}`);
+                          } else {
+                              log.info(`emitting data for ${repo}`);
+                              reviewEmitter.emit('new-reviews', {
+                                  repo,
+                                  data: {
+                                      name: repo,
+                                      pullRequests: changes,
+                                  },
+                              });
+                          }
+                          reviewEmitter.emit('rate-limit', data.rateLimit);
+                      })
+                      .catch((e: Error) => {
+                          console.log(e);
+                      })
+                : Promise.resolve();
+        }),
     );
 }
 
