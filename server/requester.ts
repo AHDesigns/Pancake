@@ -14,13 +14,11 @@ export default (sharedInfo: TServerInfo): void => {
           }, 30 * 1000)
         : setTimeout(() => {
               requester(sharedInfo);
-          }, 2 * 1000);
+          }, 4 * 1000);
 };
 
 function requester({ cache, reviewEmitter, watchedRepos }: TServerInfo): void {
     const requests = Object.values(watchedRepos).reduce(dedupe, []);
-
-    log.info('fetching data', requests);
 
     Promise.all(
         requests.map(repo => {

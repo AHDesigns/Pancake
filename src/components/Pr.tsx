@@ -75,6 +75,9 @@ export default class Pr extends React.Component<IPullRequest> {
                                     day: 'numeric',
                                 })}
                             </li>
+                            <li>
+                                State: {pr.reviews.state}
+                            </li>
                         </ul>
                     </div>
 

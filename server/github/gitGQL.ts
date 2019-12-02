@@ -1,6 +1,7 @@
 import { Options } from 'request';
 import clone from '@helpers/clone';
 import { ParamsGitGQL } from '.';
+import traverse from '@helpers/traverse';
 
 export default function gitGQL(params: ParamsGitGQL): { options: Options; loggable: Options } {
     const options: Options = {
@@ -34,13 +35,7 @@ function clean(params: Options): Options {
     if (params.headers && params.headers.Authorization && safe.headers) {
         safe.headers.Authorization = params.headers.Authorization.replace(/./g, 'x');
     }
-    safe.body.variables = Object.entries(safe.body.variables).reduce(
-        (acc, [key, value]) => ({
-            ...acc,
-            [key]: (value + '').replace(/./g, 'x'),
-        }),
-        {},
-    );
+    safe.body.variables = traverse(safe.body.variables, (value: any) => (value + '').replace(/./g, 'x'));
 
     return safe;
 }

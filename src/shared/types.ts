@@ -32,42 +32,42 @@ export function isPrData(data: any): data is IPrData {
 }
 
 export enum EnumBoardStatus {
-    NEW,
-    UNCHANGED,
-    UPDATED,
+    NEW = 'NEW',
+    UNCHANGED = 'UNCHANGED',
+    UPDATED = 'UPDATED',
 }
 
 export enum reviewStates {
-    PENDING,
-    COMMENTED,
-    APPROVED,
-    CHANGES_REQUESTED,
-    DISMISSED,
+    PENDING = 'PENDING',
+    COMMENTED = 'COMMENTED',
+    APPROVED = 'APPROVED',
+    CHANGES_REQUESTED = 'CHANGES',
+    DISMISSED = 'DISMISSED',
 }
 
 export enum Mergeable {
-    CONFLICTING,
-    MERGEABLE,
-    UNKNOWN,
+    CONFLICTING = 'CONFLICTING',
+    MERGEABLE = 'MERGEABLE',
+    UNKNOWN = 'UNKNOWN',
 }
 
 export enum MergeStateStatus {
-    BEHIND,
-    BLOCKED,
-    CLEAN,
-    DIRTY,
-    DRAFT,
-    HAS_HOOKS,
-    UNKNOWN,
-    UNSTABLE,
+    BEHIND = 'BEHIND',
+    BLOCKED = 'BLOCKED',
+    CLEAN = 'CLEAN',
+    DIRTY = 'DIRTY',
+    DRAFT = 'DRAFT',
+    HAS_HOOKS = 'HAS',
+    UNKNOWN = 'UNKNOWN',
+    UNSTABLE = 'UNSTABLE',
 }
 
 export enum StatusState {
-    EXPECTED,
-    ERROR,
-    FAILURE,
-    PENDING,
-    SUCCESS,
+    EXPECTED = 'EXPECTED',
+    ERROR = 'ERROR',
+    FAILURE = 'FAILURE',
+    PENDING = 'PENDING',
+    SUCCESS = 'SUCCESS',
 }
 
 export interface IUniqueReview {
@@ -97,6 +97,16 @@ export type IReviewRequest = {
 };
 
 export interface IPullRequest {
+    baseRefName: string;
+    headRefName: string;
+    labels: {
+        nodes: Array<{
+            name: string;
+        }>;
+    };
+    repository: {
+        id: string;
+    };
     id: string;
     // TODO: this shouldn't be optional, the types need to be combined
     boardStatus?: EnumBoardStatus;

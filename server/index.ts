@@ -11,6 +11,7 @@ import { port } from './helpers/config';
 import log from './helpers/logger';
 import cacheSystem from './helpers/cache';
 import pollGithubForChanges from './requester';
+import branchUpdater from './branchUpdater';
 import { TServerInfo } from '@types';
 import { SocketIOEvents } from '@shared/constants';
 
@@ -26,7 +27,9 @@ const sharedInfo: TServerInfo = {
 createRouter(app, sharedInfo.cache);
 
 io.on(SocketIOEvents.connect, setUpSocket(sharedInfo));
+
 pollGithubForChanges(sharedInfo);
+branchUpdater(sharedInfo);
 
 http.listen(port, () => {
     log.info('app.start', {

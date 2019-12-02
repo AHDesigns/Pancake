@@ -32,6 +32,16 @@ const reviewsQuery = `
             }
 
             nodes {
+                baseRefName
+                headRefName
+                labels(first: 10) {
+                    nodes {
+                    name
+                    }
+                }
+                repository {
+                    id
+                }
                 updatedAt
                 id
                 createdAt
@@ -141,6 +151,16 @@ type TCommit = {
 };
 
 export type TGithubPr = {
+    baseRefName: string;
+    headRefName: string;
+    labels: {
+        nodes: Array<{
+            name: string;
+        }>;
+    };
+    repository: {
+        id: string;
+    };
     updatedAt: DateTime;
     id: string;
     createdAt: DateTime;

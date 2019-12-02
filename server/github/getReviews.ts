@@ -79,6 +79,9 @@ function calcReviewState(rawReviews: TPrReview[]): IPullRequest['reviews'] {
     }
 
     function reviewStateFromReviews(currState: reviewStates, review: IUniqueReview): reviewStates {
+        // console.log('review', review.author)
+        // console.log('currState', currState)
+        // console.log('enums', reviewStates)
         if (currState === CHANGES_REQUESTED) {
             return currState;
         }
