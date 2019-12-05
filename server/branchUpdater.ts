@@ -30,6 +30,7 @@ function branchUpdater({ reviewEmitter }: TServerInfo): void {
                                 repositoryId: pr.repository.id,
                                 head: 'develop',
                                 base: pr.headRefName,
+                                commitMessage: `Merge branch 'develop' into ${pr.headRefName}`,
                             },
                         }),
                     ),
@@ -58,6 +59,7 @@ async function mergeBranch(pr?: IPullRequest): Promise<TUpdateBranch | null> {
                   repositoryId: pr.repository.id,
                   base: 'develop',
                   head: pr.headRefName,
+                  commitMessage: `${pr.title} (#${pr.number})`,
               },
           })
         : Promise.resolve(null);

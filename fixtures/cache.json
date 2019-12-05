@@ -22,5 +22,13 @@
       "prCount": 5,
       "reviewsCount": 1
     }
+  },
+  "release-tester": {
+    "params": {
+      "name": "release-tester",
+      "owner": "AHDesigns",
+      "prCount": 5,
+      "reviewsCount": 1
+    }
   }
 }

@@ -27,6 +27,7 @@ export interface UpdateBranchGitGQL extends IGitGQL {
             repositoryId: string;
             base: string;
             head: string;
+            commitMessage: string;
         };
     };
 }

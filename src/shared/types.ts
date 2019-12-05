@@ -97,6 +97,7 @@ export type IReviewRequest = {
 };
 
 export interface IPullRequest {
+    number: number;
     baseRefName: string;
     headRefName: string;
     labels: {

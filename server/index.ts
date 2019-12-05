@@ -29,7 +29,7 @@ createRouter(app, sharedInfo.cache);
 io.on(SocketIOEvents.connect, setUpSocket(sharedInfo));
 
 pollGithubForChanges(sharedInfo);
-branchUpdater(sharedInfo);
+// branchUpdater(sharedInfo);
 
 http.listen(port, () => {
     log.info('app.start', {

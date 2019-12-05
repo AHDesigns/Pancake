@@ -1,0 +1,8 @@
+*
+!src/
+!server/
+!public/
+!package.json
+!yarn.lock
+!tsconfig.base.json
+!tsconfig.json

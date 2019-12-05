@@ -32,6 +32,7 @@ const reviewsQuery = `
             }
 
             nodes {
+                number
                 baseRefName
                 headRefName
                 labels(first: 10) {
@@ -151,6 +152,7 @@ type TCommit = {
 };
 
 export type TGithubPr = {
+    number: number;
     baseRefName: string;
     headRefName: string;
     labels: {
